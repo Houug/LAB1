@@ -1,0 +1,389 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <iomanip>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#include <locale>
+#include <stdio.h>
+#include <Windows.h>
+using namespace std;
+#define path "data.txt"
+
+typedef struct poly
+{
+	int specialty;
+	int qualification;
+	char* fio;
+}lib;
+
+int checkInput(int n, int mode)
+{
+	if (mode == 0)
+	{
+		switch (n)
+		{
+		case 1:
+			return 1;
+		case 2:
+			return 1;
+		case 3:
+			return 1;
+		default:
+			return 0;
+		}
+	}
+	if (mode == 1)
+	{
+		switch (n)
+		{
+		case 0:
+			return 1;
+		case 1:
+			return 1;
+		case 2:
+			return 1;
+		default:
+			return 0;
+		}
+	}
+
+}
+void printHeader()
+{
+	printf("\n========================================================================\n");
+	printf("%40s %15s %15s\n","Ф.И.О Врача","Cпециальность","Квалификация");
+	printf("========================================================================\n");
+}
+void printMenu()
+{
+	printf("\n\n***************Меню**************\n");
+	printf("1 - Добавить врача в базу\n2 - Поиск врача по Ф.И.О\n3 - Поиск врачей по специальности и квалификации\n4 - Сортировка базы по алфавиту\n5 - Вывод базы с врачами\n6 - Выход из программы");
+	printf("\n*********************************\n");
+}
+void saveData(lib* m, int n, FILE* data)
+{
+	for (int i = 0; i < n; i++)
+	{
+		fprintf(data, "%s %d %d\n", m[i].fio, m[i].specialty, m[i].qualification);
+	}
+}
+void loadData(lib*& m, int* n, FILE* data)
+{
+	int i = 0;
+	printf("Файл успешно открыт!\n");
+	while (!feof(data))
+	{
+		char buf[60], bufName[20], bufSurname[20], bufFather[20];
+
+		m = (lib*)realloc(m, (*n + 1) * sizeof(lib));
+
+		fscanf(data, "%s %s %s %d %d", bufName, bufSurname, bufFather, &m[*n].specialty, &m[*n].qualification);
+
+		strcpy(buf, bufName);
+		strcat(buf, " ");
+		strcat(buf, bufSurname);
+		strcat(buf, " ");
+		strcat(buf, bufFather);
+
+		m[i].fio = (char*)malloc((strlen(buf) + 1) * sizeof(char));
+		strcpy(m[i].fio, buf);
+
+		*n += 1;
+		i++;
+	}
+	*n -= 1;
+}
+void addDoctor(lib*& m, int* n, FILE* data)
+{
+	*n += 1;
+	m = (lib*)realloc(m, *n * sizeof(lib));
+
+	char bufName[20], bufSurname[20], bufFather[20], buf[60];
+
+	printf("Ввод фамилия: ");
+	scanf("%[a-z,A-Z,а-я,А-Я,0-9]s", bufSurname);
+	gets_s(buf);//?????
+
+	printf("Ввод имя: ");
+	scanf("%[a-z,A-Z,а-я,А-Я,0-9]s", bufName);
+	gets_s(buf);//?????
+
+	printf("Ввод отчество: ");
+	scanf("%[a-z,A-Z,а-я,А-Я,0-9]s", bufFather);
+	gets_s(buf);//?????
+
+	strcpy(buf, bufSurname);
+	strcat(buf, " ");
+	strcat(buf, bufName);
+	strcat(buf, " ");
+	strcat(buf, bufFather);
+
+	int i = *n - 1;
+	m[i].fio = (char*)malloc((strlen(buf) + 1) * sizeof(char));
+	strcpy(m[i].fio, buf);
+
+	do
+	{
+		printf("Введите специальность: ");
+		scanf("%1d", &m[i].specialty);
+
+		gets_s(buf);//?????
+
+	} while (checkInput(m[i].specialty, 0) == 0);
+
+	do
+	{
+		printf("Введите квалификацию: ");
+		scanf("%d", &m[i].qualification);
+
+		gets_s(buf);//?????
+
+	} while (checkInput(m[i].qualification, 1) == 0);
+
+	fprintf(data, "%s %d %d\n", m[i].fio, m[i].specialty, m[i].qualification);
+}
+void createData(lib*& m, int* n, FILE* data)
+{
+	char prot[10];
+	printf("Введите кол-во позиций в базе: ");
+	scanf("%d", n);
+	gets_s(prot);//?????
+
+	for (int j = 0; j < *n;)
+	{
+		j++;
+
+		printf("Ввод в базу позиции номер (%d)\n", j);
+
+		m = (lib*)realloc(m, j * sizeof(lib));
+
+		char bufName[20], bufSurname[20], bufFather[20], buf[60];
+
+		printf("Ввод фамилия: ");
+		scanf("%[a-z,A-Z,а-я,А-Я,0-9]s", bufSurname);
+		gets_s(buf);//?????
+
+		printf("Ввод имя: ");
+		scanf("%[a-z,A-Z,а-я,А-Я,0-9]s", bufName);
+		gets_s(buf);//?????
+
+		printf("Ввод отчество: ");
+		scanf("%[a-z,A-Z,а-я,А-Я,0-9]s", bufFather);
+		gets_s(buf);//?????
+
+		strcpy(buf, bufSurname);
+		strcat(buf, " ");
+		strcat(buf, bufName);
+		strcat(buf, " ");
+		strcat(buf, bufFather);
+
+		int i = j - 1;
+		m[i].fio = (char*)malloc((strlen(buf) + 1) * sizeof(char));
+		strcpy(m[i].fio, buf);
+
+		do
+		{
+			printf("Введите специальность: ");
+			scanf("%1d", &m[i].specialty);
+
+			gets_s(buf);//?????
+
+		} while (checkInput(m[i].specialty, 0) == 0);
+
+		do
+		{
+			printf("Введите квалификацию: ");
+			scanf("%d", &m[i].qualification);
+
+			gets_s(buf);//?????
+
+		} while (checkInput(m[i].qualification, 1) == 0);
+
+		fprintf(data, "%s %d %d\n", m[i].fio, m[i].specialty, m[i].qualification);
+	}
+}
+void printDoctor(lib* m, int n)
+{
+	char specialty[11], qualification[7];
+	
+	printf("%d %d", m[n].specialty, m[n].qualification);
+
+	switch (m[n].specialty)
+	{
+	case 1:
+		strcpy(specialty, "Терапевт");
+		break;
+	case 2:
+		strcpy(specialty, "Кардиолог");
+		break;
+	case 3:
+		strcpy(specialty, "Стоматолог");
+		break;
+	default:
+		strcpy(specialty, "NAN");
+		break;
+	}
+	switch (m[n].qualification)
+	{
+	case 0:
+		strcpy(qualification, "Высшая");
+		break;
+	case 1:
+		strcpy(qualification, "Первая");
+		break;
+	case 2:
+		strcpy(qualification, "Вторая");
+		break;
+	default:
+		strcpy(qualification, "NAN");
+		break;
+	}
+	printf("%40s %15s %15s\n", m[n].fio, specialty, qualification);
+}
+void printAllDoctors(lib* m, int n)
+{
+	printHeader();
+	for (int i = 0; i < n; i++)
+	{
+		printDoctor(m, i);
+	}
+}
+void findDoctor(lib* m, int n)
+{
+	char buf[60];
+	int count = 0;
+	printf("Введите Ф.И.О Врача: ");
+	gets_s(buf);
+
+	printHeader();
+	for (int i = 0; i < n; i++)
+	{
+		if (strncmp(buf, m[i].fio, strlen(buf)) == 0)
+		{
+			printDoctor(m, i);
+			count++;
+		}
+	}
+	if (count == 0) printf("Поиск не выдал результов\n");
+}
+void filterDoctor(lib* m, int n)
+{
+	char def[10];
+	int spec = 0, qual = 0;
+	int count = 0;
+	do
+	{
+		printf("Введите специальность: ");
+		scanf("%1d", &spec);
+		gets_s(def); //?????
+	} while (checkInput(spec, 0) == 0);
+	
+	do
+	{
+		printf("Введите квалификация: ");
+		scanf("%1d", &qual);
+		gets_s(def); //?????
+	} while (checkInput(spec, 0) == 0);
+	
+	printHeader();
+	for (int i = 0; i < n; i++)
+	{
+		if ((spec == m[i].specialty) && (qual == m[i].qualification))
+		{
+			printDoctor(m, i);
+			count++;
+		}
+	}
+	if (count == 0) printf("Поиск не выдал результов\n");
+}
+void sortData(lib* m, int n)
+{
+	int min;
+	lib temp;
+	for (int i = 0; i < n - 1; i++)
+	{
+		min = i;
+	
+		for (int j = i + 1; j < n; j++)
+		{
+			if (strcmp(m[min].fio, m[j].fio) > 0)
+			{
+				min = j;
+			}       
+		}
+
+		temp = m[i];
+		m[i] = m[min];
+		m[min] = temp;
+	}
+}
+
+int main()
+{
+	setlocale(LC_ALL, "Russian");
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
+
+	FILE* data;
+	int n = 0;
+
+	lib* arr = (lib*)malloc(n * sizeof(lib));
+
+	if ((data = fopen(path, "r")) == 0)
+	{
+		printf("Файл не найден! Создание нового...\n");
+		data = fopen(path, "w");
+		createData(arr, &n, data);
+		fclose(data);
+	}
+	else
+	{
+		data = fopen(path, "r");
+		loadData(arr, &n, data);
+		fclose(data);
+	}
+
+	do
+	{
+		int menu;
+		char def[10];
+		printf("%d\n", n);
+		printMenu();
+		printf("Выберите пункт меню: ");
+		scanf("%1d", &menu);
+
+		gets_s(def);//??????
+
+		switch (menu)
+		{
+		case 1:
+			data = fopen(path, "a");
+			addDoctor(arr, &n, data);
+			fclose(data);
+			break;
+		case 2:
+			findDoctor(arr, n);
+			break;
+		case 3:
+			filterDoctor(arr, n);
+			break;
+		case 4:
+			sortData(arr, n);
+			break;
+		case 5:
+			printAllDoctors(arr, n);
+			break;
+		case 6:
+			data = fopen(path, "w");
+			saveData(arr, n, data);
+			fclose(data);
+			free(arr);
+			return 0;
+			break;
+		default:
+			printf("Введенный вами пункт меню не существует\n");
+			break;
+		}
+	} while (TRUE);
+}
